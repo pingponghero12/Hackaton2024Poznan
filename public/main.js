@@ -1,24 +1,48 @@
 console.log('Script started'); // This will log when the script starts running
 
-const buttonCreate = document.getElementById('create');
-const label = document.getElementById('MyLabel');
+const signupButton = document.getElementById('signup');
+const loginInput = document.getElementById('login');
+const passwordInput = document.getElementById('password');
+const signinButton = document.getElementById('signin');
 
-console.log('Button:', buttonCreate); // This will log the button element
-console.log('Label:', label); // This will log the label element
+signupButton.onclick = function() {
+  const username = loginInput.value;
+  const password = passwordInput.value; // Replace this with the actual password
 
-buttonCreate.onclick = function() {
-  console.log('Button clicked'); // This will log when the button is clicked
+  fetch('/addUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log(data); // Log the response from the server
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+};
 
-  fetch('/firstItem')
-    .then(response => {
-      console.log('Response:', response); // This will log the response from the server
-      return response.json();
-    })
-    .then(data => {
-      console.log('Data:', data); // This will log the data from the server
-      label.textContent = data.name;
-    })
-    .catch(error => {
-      console.log('Error:', error); // This will log any errors that occur during the fetch request
-    });
+
+
+signinButton.onclick = function() {
+  const username = loginInput.value;
+  const password = passwordInput.value;
+
+  fetch('/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log(data); // Log the response from the server
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 };
