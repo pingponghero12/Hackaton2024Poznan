@@ -3,11 +3,14 @@ const path = require('path');
 const app = express();
 const port = 3000;
 const session = require('express-session');
+const bodyParser = require('body-parser');
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json()); // Add this line to enable parsing of JSON request bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const mysql = require('mysql');
@@ -23,6 +26,19 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
   }));
+
+app.get('/papers', (req, res) => {
+    const sql = 'SELECT * FROM papers';
+
+    db.query(sql, (error, results) => {
+        if (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+        } else {
+        res.json(results);
+        }
+    });
+});
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
@@ -60,15 +76,33 @@ app.post('/addUser', (req, res) => {
     });
 });
 
+app.post('/addPaper', (req, res) => {
+    console.log(req.body); // Add this line
+    const { title, date, author, description} = req.body;
+    const query = "INSERT INTO papers (title, date, author, description) VALUES (?, ?, ?, ?)";
+    db.query(query, [title, date, description, author], (err, result) => {
+        if (err) throw err;
+        console.log('Paper added successfully');
+        res.send('Paper added successfully');
+    });
+});
 
 
 
-app.get('/data', (req, res) => {
+
+app.get('/dataUsers', (req, res) => {
     db.query("SELECT * FROM users", (err, results) => {
       if (err) throw err;
       res.send(results);
     });
   });;
+
+app.get('/dataPapers', (req, res) => {
+    db.query("SELECT * FROM papers", (err, results) => {
+        if (err) throw err;
+        res.send(results);
+    });
+});;
 
 db.connect((err) => {
   if (err) throw err;
