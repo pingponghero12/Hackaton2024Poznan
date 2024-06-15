@@ -3,6 +3,9 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 const mysql = require('mysql');
 const db = mysql.createConnection({
   host: 'localhost',
@@ -11,14 +14,10 @@ const db = mysql.createConnection({
   database: 'test_db'
 });
 
-app.post('/create', (req, res) => {
-    db.query("INSERT INTO items (name, price) VALUES ('skibidi toilet', 100)", (err, results) => {
+app.get('/firstItem', (req, res) => {
+    db.query("SELECT * FROM items ORDER BY id ASC LIMIT 1", (err, results) => {
       if (err) throw err;
-      console.log('Inserted new item');
-      db.query("SELECT * FROM items ORDER BY id DESC LIMIT 1", (err, results) => {
-        if (err) throw err;
-        res.send(results[0]);
-      });
+      res.send(results[0]);
     });
   });
 
