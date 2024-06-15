@@ -32,6 +32,10 @@ window.onload = function() {
         description.textContent = paper.description;
         paperDiv.appendChild(description);
 
+        paperDiv.addEventListener('click', function() {
+          window.location.href = `/paper/${paper.id}`; // Assuming the URL includes the paper id
+        });
+
         papersDiv.appendChild(paperDiv);
       });
     })
@@ -42,10 +46,9 @@ window.onload = function() {
 
 AddPaperButton.onclick = function() {
     const title = Title.value;
-    const publicationDate = new Date(PublicationDate.value);
+    const publicationDate = PublicationDate.value;
     const author = Author.value;
     const description = Description.value;
-    const formattedDate = publicationDate.toISOString().split('T')[0];
 
     console.log(publicationDate);
     fetch('/addPaper', {
@@ -53,7 +56,7 @@ AddPaperButton.onclick = function() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title, formattedDate, author, description}),
+      body: JSON.stringify({ title, publicationDate, author, description}),
     })
     .then(response => response.text())
     .then(data => {

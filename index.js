@@ -1,9 +1,11 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = 3000;
+const port = 3001;
 const session = require('express-session');
 const bodyParser = require('body-parser');
+
+const getPaperById = require('./getPaperById');
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -11,6 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // Add this line to enable parsing of JSON request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
 
 
 const mysql = require('mysql');
@@ -65,6 +68,27 @@ app.post('/login', (req, res) => {
     });
   });
 
+app.get('/paper/:id', (req, res) => {
+  const id = req.params.id;
+
+  getPaperById(id)
+    .then(paper => {
+      if (paper) {
+        res.render('paper', { paper }); // Assuming you have a view named 'paper'
+      } else {
+        res.status(404).send('Paper not found');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
 
 app.post('/addUser', (req, res) => {
     const { username, password } = req.body;
@@ -78,9 +102,9 @@ app.post('/addUser', (req, res) => {
 
 app.post('/addPaper', (req, res) => {
     console.log(req.body); // Add this line
-    const { title, date, author, description} = req.body;
-    const query = "INSERT INTO papers (title, date, author, description) VALUES (?, ?, ?, ?)";
-    db.query(query, [title, date, description, author], (err, result) => {
+    const { title, publicationDate, author, description} = req.body;
+    const query = "INSERT INTO papers (title, publicationDate, author, description) VALUES (?, ?, ?, ?)";
+    db.query(query, [title, publicationDate, description, author], (err, result) => {
         if (err) throw err;
         console.log('Paper added successfully');
         res.send('Paper added successfully');

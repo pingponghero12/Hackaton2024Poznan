@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS papers (
     id INT AUTO_INCREMENT,
     title VARCHAR(255),
-    date DATE,
+    publicationDate DATE,
     description TEXT,
     author VARCHAR(255),
     PRIMARY KEY(id)
