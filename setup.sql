@@ -31,3 +31,11 @@ CREATE TABLE IF NOT EXISTS paper_genres (
     FOREIGN KEY(paper_id) REFERENCES papers(id),
     FOREIGN KEY(genre_id) REFERENCES genres(id)
 );
+
+CREATE TABLE IF NOT EXISTS relation_list (
+    user_id INT,
+    paper_id INT,
+    PRIMARY KEY(user_id, paper_id),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(paper_id) REFERENCES papers(id)
+);

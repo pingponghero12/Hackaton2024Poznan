@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Counter</title>
+    <style>
+        body {
+            background-color: #303030;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #top-bar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between; /* Distribute items evenly */
+            align-items: center; /* Center items vertically */
+            background-color: rgb(32, 32, 121);
+             /* Full viewport width */
+            height: 5em; /* 5 lines of text */
+            z-index: 1; /* Ensure it stays on top of other content */
+            padding: 0 4em 0 4em; /* Add some padding to the sides */
+        }
+        #papers {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #papers {
+            background-color: #303030;
+            color: white;
+            padding: 20px;
+
+            padding-top: 10px;
+        }
+        #papers > div {
+            background-color: rgb(32, 32, 121);
+            width: 50%;
+            margin-bottom: 20px;
+            justify-self: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-bar">
+        <h2>SciPaperList</h2>
+        <a href="/">Index</a>
+    </div>
+
+    <div id="papers"></div>
+
+    <script src="mylListHandler.js"></script>
+</body>
+</html>

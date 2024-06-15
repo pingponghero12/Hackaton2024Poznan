@@ -3,10 +3,13 @@
 <head>
     <title><%= paper.title %></title>
 </head>
-<body>
+<body data-paper-id="<%= paper.id %>" >
     <h1><%= paper.title %></h1>
     <p><%= paper.author %></p>
     <p><%= paper.publicationDate %></p>
     <p><%= paper.description %></p>
+    <button id="AddToMyListButton">Add to my list.</button>
+
+    <script src="/addRelationHandler.js"></script>
 </body>
 </html>

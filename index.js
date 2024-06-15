@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 const getPaperById = require('./getPaperById');
 
+
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,6 +31,24 @@ app.use(session({
     saveUninitialized: true,
   }));
 
+app.post('/add-to-my-list', (req, res) => {
+    console.log(req.session.userId);
+    const userId = req.session.userId;
+    const paperId = req.body.paperId;
+
+    const sql = 'INSERT INTO relation_list (user_id, paper_id) VALUES (?, ?)';
+
+    db.query(sql, [userId, paperId], (error, results) => {
+        if (error) {
+        console.error('Error:', error);
+        res.status(500).send('An error occurred');
+        } else {
+        console.log('Added to list');
+        res.send('Added to list');
+        }
+    });
+});
+
 app.get('/papers', (req, res) => {
     const sql = 'SELECT * FROM papers';
 
@@ -39,6 +58,24 @@ app.get('/papers', (req, res) => {
         res.status(500).send('Server error');
         } else {
         res.json(results);
+        }
+    });
+});
+
+app.get('/my-papers', (req, res) => {
+    const userId = req.session.userId;
+    const query = `
+        SELECT papers.*
+        FROM relation_list
+        JOIN papers ON relation_list.paper_id = papers.id
+        WHERE relation_list.user_id = ?
+    `;
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+        } else {
+            res.json(results);
         }
     });
 });
@@ -55,8 +92,10 @@ app.post('/login', (req, res) => {
             if (password === user.password) {
                 res.send('Login successful');
                 console.log('Login successful');
-                console.log(user.id);
+                
                 req.session.userId = user.id;
+                console.log(req.session.userId);
+                req.session.save();
             } 
             else {
                 res.send('Incorrect password');
